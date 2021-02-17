@@ -1,0 +1,23 @@
+.App {
+  font-family: sans-serif;
+  text-align: center;
+  width: 384px;
+  margin: auto;
+}
+
+#settings-container {
+  display: flex;
+  justify-content: space-evenly
+}
+
+#time-container, #break-container, #session-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.controls {
+  display: flex;
+  justify-content: space-evenly;
+  width: 100%;
+}
