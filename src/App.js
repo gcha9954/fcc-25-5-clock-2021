@@ -1,5 +1,6 @@
 import { Component, createRef } from "react";
 import "./styles.scss";
+import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 
 export default class App extends Component {
@@ -138,14 +139,20 @@ export default class App extends Component {
     }
 
     return (
-      <div className="App">
+      <Paper id="container">
         <audio
           id="beep"
           src="https://raw.githubusercontent.com/freeCodeCamp/cdn/master/build/testable-projects-fcc/audio/BeepSound.wav"
           ref={this.audioRef}
         ></audio>
-        <div id="time-container">
-          <div id="timer-label">{this.state.status}</div>
+        <div id="timer-label">
+          {this.state.status === "session" ? "Session" : "Break"}
+        </div>
+        <div className="controls">
+          <Button id="start_stop" variant="contained" onClick={start_stop}>
+            <span class="material-icons">play_arrow</span>
+            <span class="material-icons">pause</span>
+          </Button>
           <div id="time-left">
             {
               // because I'm using a date object for the timer, if it gets to 60 minutes, the minutes
@@ -159,59 +166,47 @@ export default class App extends Component {
                   })
             }
           </div>
-          <div className="controls">
-            <Button id="start_stop" variant="contained" onClick={start_stop}>
-              <span class="material-icons">play_arrow</span>
-              <span class="material-icons">pause</span>
-            </Button>
-            <Button id="reset" variant="contained" onClick={this.reset}>
-              <span class="material-icons">restart_alt</span>
-            </Button>
-          </div>
+          <Button id="reset" variant="contained" onClick={this.reset}>
+            <span class="material-icons">restart_alt</span>
+          </Button>
         </div>
-        <div id="settings-container">
-          <div id="break-container">
-            <div id="break-label">Break length</div>
-            <div id="break-length">{this.state.breakLength}</div>
-            <div className="controls">
-              <Button
-                id="break-decrement"
-                variant="contained"
-                onClick={this.decrementBreakLength}
-              >
-                <span class="material-icons">keyboard_arrow_down</span>
-              </Button>
-              <Button
-                id="break-increment"
-                variant="contained"
-                onClick={this.incrementBreakLength}
-              >
-                <span class="material-icons">keyboard_arrow_up</span>
-              </Button>
-            </div>
-          </div>
-          <div id="session-container">
-            <div id="session-label">Session length</div>
-            <div id="session-length">{this.state.sessionLength}</div>
-            <div className="controls">
-              <Button
-                id="session-decrement"
-                variant="contained"
-                onClick={this.decrementSessionLength}
-              >
-                <span class="material-icons">keyboard_arrow_down</span>
-              </Button>
-              <Button
-                id="session-increment"
-                variant="contained"
-                onClick={this.incrementSessionLength}
-              >
-                <span class="material-icons">keyboard_arrow_up</span>
-              </Button>
-            </div>
-          </div>
+        <div id="break-label">Break length</div>
+        <div className="controls">
+          <Button
+            id="break-decrement"
+            variant="contained"
+            onClick={this.decrementBreakLength}
+          >
+            <span class="material-icons">keyboard_arrow_down</span>
+          </Button>
+          <div id="break-length">{this.state.breakLength}</div>
+          <Button
+            id="break-increment"
+            variant="contained"
+            onClick={this.incrementBreakLength}
+          >
+            <span class="material-icons">keyboard_arrow_up</span>
+          </Button>
         </div>
-      </div>
+        <div id="session-label">Session length</div>
+        <div className="controls">
+          <Button
+            id="session-decrement"
+            variant="contained"
+            onClick={this.decrementSessionLength}
+          >
+            <span class="material-icons">keyboard_arrow_down</span>
+          </Button>
+          <div id="session-length">{this.state.sessionLength}</div>
+          <Button
+            id="session-increment"
+            variant="contained"
+            onClick={this.incrementSessionLength}
+          >
+            <span class="material-icons">keyboard_arrow_up</span>
+          </Button>
+        </div>
+      </Paper>
     );
   }
 }
