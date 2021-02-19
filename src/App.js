@@ -1,13 +1,6 @@
-import { Component } from "react";
+import { Component, createRef } from "react";
 import "./styles.scss";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faArrowUp,
-  faArrowDown,
-  faPause,
-  faPlay,
-  faRedo
-} from "@fortawesome/free-solid-svg-icons";
+import Button from "@material-ui/core/Button";
 
 export default class App extends Component {
   constructor(props) {
@@ -27,6 +20,7 @@ export default class App extends Component {
     this.incrementBreakLength = this.incrementBreakLength.bind(this);
     this.decrementSessionLength = this.decrementSessionLength.bind(this);
     this.incrementSessionLength = this.incrementSessionLength.bind(this);
+    this.audioRef = createRef();
   }
 
   start() {
@@ -40,6 +34,8 @@ export default class App extends Component {
       this.state.time.valueOf() ===
       new Date("January 1, 1970 00:00:00").valueOf()
     ) {
+      // play alarm sound
+      this.audioRef.current.play();
       //clearInterval(this.state.interval);
       //this.setState({ interval: null });
       // this will need to start a break by setting time to breakLength
@@ -68,6 +64,9 @@ export default class App extends Component {
 
   reset() {
     this.setState((state) => {
+      // stops alarm and sets it to 0
+      this.audioRef.current.pause();
+      this.audioRef.current.currentTime = 0;
       // if there is an ongoing or paused interval, clear it
       if (state.interval !== null && state.interval !== "paused") {
         clearInterval(state.interval);
@@ -128,30 +127,46 @@ export default class App extends Component {
   }
 
   render() {
+    // start_stop will be the start() function if timer has not started or is paused
+    // otherwise will be the pause() function
+    // start_stop is the onClick function for the #start_stop button
     let start_stop;
     if (this.state.interval === null || this.state.interval === "paused") {
       start_stop = this.start;
     } else {
       start_stop = this.pause;
     }
+
     return (
       <div className="App">
+        <audio
+          id="beep"
+          src="https://raw.githubusercontent.com/freeCodeCamp/cdn/master/build/testable-projects-fcc/audio/BeepSound.wav"
+          ref={this.audioRef}
+        ></audio>
         <div id="time-container">
           <div id="timer-label">{this.state.status}</div>
           <div id="time-left">
-            {this.state.time.toLocaleTimeString([], {
-              minute: "2-digit",
-              second: "2-digit"
-            })}
+            {
+              // because I'm using a date object for the timer, if it gets to 60 minutes, the minutes
+              // and seconds are 00:00. So this conditional is here to directly set the time label
+              // to 60:00 if this.state.time.getHours() = 1
+              this.state.time.getHours() === 1
+                ? "60:00"
+                : this.state.time.toLocaleTimeString([], {
+                    minute: "2-digit",
+                    second: "2-digit"
+                  })
+            }
           </div>
           <div className="controls">
-            <div id="start_stop" onClick={start_stop}>
-              <FontAwesomeIcon icon={faPlay} />
-              <FontAwesomeIcon icon={faPause} />
-            </div>
-            <div id="reset" onClick={this.reset}>
-              <FontAwesomeIcon icon={faRedo} />
-            </div>
+            <Button id="start_stop" variant="contained" onClick={start_stop}>
+              <span class="material-icons">play_arrow</span>
+              <span class="material-icons">pause</span>
+            </Button>
+            <Button id="reset" variant="contained" onClick={this.reset}>
+              <span class="material-icons">restart_alt</span>
+            </Button>
           </div>
         </div>
         <div id="settings-container">
@@ -159,24 +174,40 @@ export default class App extends Component {
             <div id="break-label">Break length</div>
             <div id="break-length">{this.state.breakLength}</div>
             <div className="controls">
-              <div id="break-decrement" onClick={this.decrementBreakLength}>
-                <FontAwesomeIcon icon={faArrowDown} />
-              </div>
-              <div id="break-increment" onClick={this.incrementBreakLength}>
-                <FontAwesomeIcon icon={faArrowUp} />
-              </div>
+              <Button
+                id="break-decrement"
+                variant="contained"
+                onClick={this.decrementBreakLength}
+              >
+                <span class="material-icons">keyboard_arrow_down</span>
+              </Button>
+              <Button
+                id="break-increment"
+                variant="contained"
+                onClick={this.incrementBreakLength}
+              >
+                <span class="material-icons">keyboard_arrow_up</span>
+              </Button>
             </div>
           </div>
           <div id="session-container">
             <div id="session-label">Session length</div>
             <div id="session-length">{this.state.sessionLength}</div>
             <div className="controls">
-              <div id="session-decrement" onClick={this.decrementSessionLength}>
-                <FontAwesomeIcon icon={faArrowDown} />
-              </div>
-              <div id="session-increment" onClick={this.incrementSessionLength}>
-                <FontAwesomeIcon icon={faArrowUp} />
-              </div>
+              <Button
+                id="session-decrement"
+                variant="contained"
+                onClick={this.decrementSessionLength}
+              >
+                <span class="material-icons">keyboard_arrow_down</span>
+              </Button>
+              <Button
+                id="session-increment"
+                variant="contained"
+                onClick={this.incrementSessionLength}
+              >
+                <span class="material-icons">keyboard_arrow_up</span>
+              </Button>
             </div>
           </div>
         </div>
